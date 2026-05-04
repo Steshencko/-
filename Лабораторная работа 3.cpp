@@ -1,7 +1,5 @@
 #include <iostream>
-#include <cstring>
 #include <cmath>
-
 using namespace std;
 
 // Класс vect - вектор
@@ -35,7 +33,7 @@ public:
         delete[] v;
     }
 
-    // Оператор присваивания v = v
+    // Оператор присваивания
     vect& operator=(const vect& other) {
         if (this != &other) {
             cout << "Присваивание: вектор #" << num << " = вектор #" << other.num << endl;
@@ -50,7 +48,7 @@ public:
         return *this;
     }
 
-    // v + v (компонентная функция)
+    // v + v
     vect operator+(const vect& other) const {
         if (dim != other.dim) {
             cerr << "Ошибка: размерности векторов не совпадают!" << endl;
@@ -63,7 +61,7 @@ public:
         return result;
     }
 
-    // v - v (компонентная функция)
+    // v - v
     vect operator-(const vect& other) const {
         if (dim != other.dim) {
             cerr << "Ошибка: размерности векторов не совпадают!" << endl;
@@ -76,7 +74,7 @@ public:
         return result;
     }
 
-    // -v (унарный минус)
+    // -v
     vect operator-() const {
         cout << "Операция: -вектор #" << num << endl;
         vect result(dim);
@@ -98,23 +96,21 @@ public:
         return result;
     }
 
-    // Внешняя функция k*v (друг)
+    // Дружественная функция k*v
     friend vect operator*(double k, const vect& vec);
 
-    // Метод для установки компонент
+    // Методы доступа
     void setComponent(int index, double value) {
         if (index >= 0 && index < dim)
             v[index] = value;
     }
 
-    // Метод для получения компоненты
     double getComponent(int index) const {
         if (index >= 0 && index < dim)
             return v[index];
         return 0;
     }
 
-    // Метод для вывода вектора
     void print() const {
         cout << "Вектор #" << num << " (dim=" << dim << "): [";
         for (int i = 0; i < dim; i++) {
@@ -124,13 +120,8 @@ public:
         cout << "]" << endl;
     }
 
-    // Получение размерности
     int getDim() const { return dim; }
-    
-    // Получение номера
     int getNum() const { return num; }
-    
-    // Получение количества объектов
     static int getCount() { return count; }
 };
 
@@ -149,10 +140,10 @@ vect operator*(double k, const vect& vec) {
 // Класс matr - матрица
 class matr {
 private:
-    int dim;        // размерность матрицы (dim x dim)
-    double** a;     // компоненты матрицы
-    int num;        // номер объекта
-    static int count; // количество созданных объектов
+    int dim;
+    double** a;
+    int num;
+    static int count;
 
 public:
     // Конструктор по умолчанию
@@ -185,7 +176,7 @@ public:
         delete[] a;
     }
 
-    // Оператор присваивания m = m
+    // Оператор присваивания
     matr& operator=(const matr& other) {
         if (this != &other) {
             cout << "Присваивание: матрица #" << num << " = матрица #" << other.num << endl;
@@ -233,7 +224,7 @@ public:
         return result;
     }
 
-    // -m (унарный минус)
+    // -m
     matr operator-() const {
         cout << "Операция: -матрица #" << num << endl;
         matr result(dim);
@@ -243,7 +234,7 @@ public:
         return result;
     }
 
-    // m * m (умножение матриц)
+    // m * m
     matr operator*(const matr& other) const {
         if (dim != other.dim) {
             cerr << "Ошибка: размерности матриц не совпадают!" << endl;
@@ -261,10 +252,10 @@ public:
         return result;
     }
 
-    // Внешняя функция k * m (друг)
+    // Дружественная функция k * m
     friend matr operator*(double k, const matr& mat);
 
-    // m * v (умножение матрицы на вектор)
+    // m * v
     vect operator*(const vect& vec) const {
         if (dim != vec.getDim()) {
             cerr << "Ошибка: размерности матрицы и вектора не совпадают!" << endl;
@@ -281,20 +272,18 @@ public:
         return result;
     }
 
-    // Метод для установки элемента
+    // Методы доступа
     void setElement(int i, int j, double value) {
         if (i >= 0 && i < dim && j >= 0 && j < dim)
             a[i][j] = value;
     }
 
-    // Метод для получения элемента
     double getElement(int i, int j) const {
         if (i >= 0 && i < dim && j >= 0 && j < dim)
             return a[i][j];
         return 0;
     }
 
-    // Метод для вывода матрицы
     void print() const {
         cout << "Матрица #" << num << " (dim=" << dim << "x" << dim << "):" << endl;
         for (int i = 0; i < dim; i++) {
@@ -307,13 +296,8 @@ public:
         }
     }
 
-    // Получение размерности
     int getDim() const { return dim; }
-    
-    // Получение номера
     int getNum() const { return num; }
-    
-    // Получение количества объектов
     static int getCount() { return count; }
 };
 
@@ -330,18 +314,15 @@ matr operator*(double k, const matr& mat) {
     return result;
 }
 
-// Главная функция
+// ГЛАВНАЯ ФУНКЦИЯ
 int main() {
-    cout << "=== СЦЕНАРИЙ РАБОТЫ С ВЕКТОРАМИ И МАТРИЦАМИ ===" << endl << endl;
+    cout << "=== РАБОТА С ВЕКТОРАМИ И МАТРИЦАМИ ===" << endl << endl;
 
-    cout << "--- Работа с векторами ---" << endl;
-    
-    // Создание векторов
+    // СОЗДАНИЕ ВЕКТОРОВ
     vect v1(3);
     vect v2(3);
-    vect v3(3);
     
-    // Заполнение векторов
+    // ЗАПОЛНЕНИЕ
     v1.setComponent(0, 1.0);
     v1.setComponent(1, 2.0);
     v1.setComponent(2, 3.0);
@@ -350,47 +331,31 @@ int main() {
     v2.setComponent(1, 5.0);
     v2.setComponent(2, 6.0);
     
-    cout << "\nИсходные векторы:" << endl;
+    cout << "Исходные векторы:" << endl;
     v1.print();
     v2.print();
     
-    // Операции с векторами
+    // ОПЕРАЦИИ С ВЕКТОРАМИ
     cout << "\n--- Операции с векторами ---" << endl;
     
     vect v_sum = v1 + v2;
-    cout << "Результат v1 + v2: ";
+    cout << "v1 + v2 = ";
     v_sum.print();
     
-    vect v_diff = v1 - v2;
-    cout << "Результат v1 - v2: ";
-    v_diff.print();
-    
-    vect v_neg = -v1;
-    cout << "Результат -v1: ";
-    v_neg.print();
-    
     double scalar = v1 * v2;
-    cout << "Скалярное произведение v1 * v2 = " << scalar << endl;
+    cout << "v1 * v2 (скалярное) = " << scalar << endl;
     
     vect v_k = 2.5 * v1;
-    cout << "Результат 2.5 * v1: ";
+    cout << "2.5 * v1 = ";
     v_k.print();
     
-    // Оператор присваивания
-    cout << "\n--- Оператор присваивания векторов ---" << endl;
-    v3 = v1;
-    cout << "v3 после присваивания v1: ";
-    v3.print();
-    
+    // СОЗДАНИЕ МАТРИЦ
     cout << "\n--- Работа с матрицами ---" << endl;
     
-    // Создание матриц
     matr m1(3);
     matr m2(3);
-    matr m3(3);
     
-    // Заполнение матриц
-    cout << "\nЗаполнение матриц:" << endl;
+    // ЗАПОЛНЕНИЕ МАТРИЦ
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             m1.setElement(i, j, i + j + 1);
@@ -403,67 +368,36 @@ int main() {
     cout << "\nМатрица m2:" << endl;
     m2.print();
     
-    // Операции с матрицами
+    // ОПЕРАЦИИ С МАТРИЦАМИ
     cout << "\n--- Операции с матрицами ---" << endl;
     
     matr m_sum = m1 + m2;
-    cout << "Результат m1 + m2:" << endl;
+    cout << "m1 + m2:" << endl;
     m_sum.print();
     
-    matr m_diff = m1 - m2;
-    cout << "Результат m1 - m2:" << endl;
-    m_diff.print();
-    
-    matr m_neg = -m1;
-    cout << "Результат -m1:" << endl;
-    m_neg.print();
-    
     matr m_prod = m1 * m2;
-    cout << "Результат m1 * m2:" << endl;
+    cout << "m1 * m2:" << endl;
     m_prod.print();
     
-    matr m_k = 1.5 * m1;
-    cout << "Результат 1.5 * m1:" << endl;
-    m_k.print();
-    
-    // Оператор присваивания матриц
-    cout << "\n--- Оператор присваивания матриц ---" << endl;
-    m3 = m1;
-    cout << "m3 после присваивания m1:" << endl;
-    m3.print();
-    
-    // Умножение матрицы на вектор
+    // УМНОЖЕНИЕ МАТРИЦЫ НА ВЕКТОР
     cout << "\n--- Умножение матрицы на вектор ---" << endl;
     vect v4(3);
     v4.setComponent(0, 1.0);
     v4.setComponent(1, 0.0);
     v4.setComponent(2, 1.0);
+    
     cout << "Вектор v4: ";
     v4.print();
-    cout << "\nМатрица m1:" << endl;
-    m1.print();
-    
+    cout << "\nМатрица m1 * v4 = ";
     vect mv_result = m1 * v4;
-    cout << "Результат m1 * v4: ";
     mv_result.print();
     
-    // Дополнительная демонстрация
-    cout << "\n--- Дополнительные операции ---" << endl;
-    
-    vect v5 = v1 + (-v2);
-    cout << "Результат v1 + (-v2): ";
-    v5.print();
-    
-    matr m_comb = (m1 + m2) * 0.5;
-    cout << "Результат (m1 + m2) * 0.5:" << endl;
-    m_comb.print();
-    
-    // Вывод статистики
+    // СТАТИСТИКА
     cout << "\n=== СТАТИСТИКА ===" << endl;
     cout << "Всего создано векторов: " << vect::getCount() << endl;
     cout << "Всего создано матриц: " << matr::getCount() << endl;
     
-    cout << "\n=== ЗАВЕРШЕНИЕ РАБОТЫ ===" << endl;
+    cout << "\n=== ПРОГРАММА ЗАВЕРШЕНА ===" << endl;
     
     return 0;
 }
