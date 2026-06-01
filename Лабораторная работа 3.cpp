@@ -100,11 +100,12 @@ public:
     friend vect operator*(double k, const vect& vec);
 
     // Методы доступа
+    // Сеттер
     void setComponent(int index, double value) {
         if (index >= 0 && index < dim)
             v[index] = value;
     }
-
+    // Геттер
     double getComponent(int index) const {
         if (index >= 0 && index < dim)
             return v[index];
