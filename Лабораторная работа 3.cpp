@@ -120,7 +120,7 @@ public:
         }
         cout << "]" << endl;
     }
-
+    // Геттеры (методы доступа для чтения)
     int getDim() const { return dim; }
     int getNum() const { return num; }
     static int getCount() { return count; }
