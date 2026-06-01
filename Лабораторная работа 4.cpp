@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-// Абстрактный класс Точка (содержит чисто виртуальные методы)
+// 1. Абстрактный класс Точка (чисто виртуальные методы)
 class Point {
 protected:
     int x, y;
@@ -10,123 +10,114 @@ public:
     Point(int x=0, int y=0) : x(x), y(y) {}
     virtual ~Point() {}
     
-    // Чисто виртуальные методы (делают класс абстрактным)
-    virtual void draw() = 0;
-    virtual void erase() = 0;
-    virtual void move(int dx, int dy) = 0;
-    virtual void rotate(double angle) = 0;
+    virtual void draw() = 0;      // изобразить
+    virtual void erase() = 0;     // убрать
+    virtual void move(int dx, int dy) = 0;      // передвинуть
+    virtual void rotate(double ang) = 0;        // повернуть
     
-    // Публичные методы доступа
+    // Публичные методы для демонстрации доступа
     int getX() { return x; }
     int getY() { return y; }
     
 protected:
-    void setX(int nx) { x = nx; }
-    void setY(int ny) { y = ny; }
+    void setX(int nx) { x = nx; }  // защищённый метод
 };
 
-// Линия (наследует Point)
+// 2. Линия
 class Line : public Point {
-    int length;
-    double angle;
+    int len;
+    double ang;
 public:
-    Line(int x, int y, int len, double ang) : Point(x, y), length(len), angle(ang) {}
+    Line(int x, int y, int l, double a) : Point(x,y), len(l), ang(a) {}
     
-    void draw() { cout << "Line at (" << x << "," << y << ") len=" << length << " ang=" << angle << endl; }
-    void erase() { cout << "Erase line" << endl; }
-    void move(int dx, int dy) { x += dx; y += dy; cout << "Line moved by " << dx << "," << dy << endl; }
-    void rotate(double a) { angle += a; cout << "Line rotated by " << a << endl; }
+    void draw() { cout << "Line at (" << x << "," << y << ") len=" << len << " ang=" << ang << endl; }
+    void erase() { cout << "Erase Line" << endl; }
+    void move(int dx, int dy) { x+=dx; y+=dy; cout << "Line moved by " << dx << "," << dy << endl; }
+    void rotate(double a) { ang+=a; cout << "Line rotated by " << a << endl; }
 };
 
-// Параллелограмм
+// 3. Базовый класс Параллелограмм (виртуальное наследование от Point)
 class Parallelogram : virtual public Point {
 protected:
-    int width, height;
-    double skew, rotation;
+    int w, h;
+    double skew, rot;
 public:
-    Parallelogram(int x, int y, int w, int h, double sk) : Point(x, y), width(w), height(h), skew(sk), rotation(0) {}
+    Parallelogram(int x, int y, int w_, int h_, double sk) : Point(x,y), w(w_), h(h_), skew(sk), rot(0) {}
     
-    void draw() { cout << "Parallelogram at (" << x << "," << y << ") w=" << width << " h=" << height << " skew=" << skew << endl; }
-    void erase() { cout << "Erase parallelogram" << endl; }
-    void move(int dx, int dy) { x += dx; y += dy; cout << "Parallelogram moved" << endl; }
-    void rotate(double a) { rotation += a; cout << "Parallelogram rotated by " << a << endl; }
+    void draw() { cout << "Parallelogram at (" << x << "," << y << ") w=" << w << " h=" << h << " skew=" << skew << endl; }
+    void erase() { cout << "Erase Parallelogram" << endl; }
+    void move(int dx, int dy) { x+=dx; y+=dy; cout << "Parallelogram moved" << endl; }
+    void rotate(double a) { rot+=a; cout << "Parallelogram rotated by " << a << endl; }
+    
+    int getW() { return w; }
+    int getH() { return h; }
 };
 
-// Прямоугольник (параллелограмм с skew=0)
+// 4. Прямоугольник (виртуально наследует Parallelogram)
 class Rectangle : virtual public Parallelogram {
 public:
-    Rectangle(int x, int y, int w, int h) : Point(x, y), Parallelogram(x, y, w, h, 0) {}
+    Rectangle(int x, int y, int w_, int h_) : Point(x,y), Parallelogram(x,y,w_,h_,0) {}
     
-    void draw() { cout << "Rectangle at (" << x << "," << y << ") w=" << width << " h=" << height << endl; }
+    void draw() { cout << "Rectangle at (" << x << "," << y << ") w=" << w << " h=" << h << endl; }
 };
 
-// Ромб (параллелограмм с равными сторонами)
+// 5. Ромб (виртуально наследует Parallelogram)
 class Rhombus : virtual public Parallelogram {
 public:
-    Rhombus(int x, int y, int side, double ang) : Point(x, y), Parallelogram(x, y, side, side, ang) {}
+    Rhombus(int x, int y, int side, double ang) : Point(x,y), Parallelogram(x,y,side,side,ang) {}
     
-    void draw() { cout << "Rhombus at (" << x << "," << y << ") side=" << width << " angle=" << skew << endl; }
+    void draw() { cout << "Rhombus at (" << x << "," << y << ") side=" << w << " angle=" << skew << endl; }
 };
 
-// Квадрат
+// 6. Квадрат (виртуально наследует Parallelogram)
 class Square : virtual public Parallelogram {
 public:
-    Square(int x, int y, int side) : Point(x, y), Parallelogram(x, y, side, side, 90) {}
+    Square(int x, int y, int side) : Point(x,y), Parallelogram(x,y,side,side,90) {}
     
-    void draw() { cout << "Square at (" << x << "," << y << ") side=" << width << endl; }
+    void draw() { cout << "Square at (" << x << "," << y << ") side=" << w << endl; }
 };
 
 int main() {
-    cout << "=== GEOMETRY HIERARCHY DEMO ===\n\n";
+    cout << "=== TASK 1: CLASS HIERARCHY ===\n";
+    Line line(10,10,50,45);
+    Rectangle rect(20,20,60,40);
+    Rhombus rhomb(30,30,40,60);
+    Square square(40,40,30);
+    Parallelogram para(50,50,70,35,30);
     
-    // 1. Создание объектов
-    Line line(10, 20, 50, 45);
-    Rectangle rect(30, 40, 60, 40);
-    Rhombus rhomb(50, 60, 40, 60);
-    Square square(70, 80, 30);
-    Parallelogram para(90, 100, 70, 35, 30);
+    // Демонстрация всех методов
+    line.draw(); line.move(5,5); line.rotate(30); line.erase(); cout << "\n";
+    rect.draw(); rect.move(5,5); rect.rotate(45); rect.erase(); cout << "\n";
+    rhomb.draw(); rhomb.move(5,5); rhomb.rotate(20); rhomb.erase(); cout << "\n";
+    square.draw(); square.move(5,5); square.rotate(90); square.erase(); cout << "\n";
     
-    // 2. Демонстрация методов
-    cout << "--- Line ---\n";
-    line.draw();
-    line.move(5, 5);
-    line.rotate(30);
-    line.erase();
+    // === TASK 2: РАЗНЫЕ УРОВНИ ДОСТУПА ===
+    cout << "=== TASK 2: ACCESS CONTROL ===\n";
+    cout << "Public access: getX() = " << rect.getX() << ", getY() = " << rect.getY() << endl;
+    // rect.x = 100;        // ОШИБКА: protected (раскомментировать для проверки)
+    // rect.setX(100);      // ОШИБКА: protected метод (раскомментировать для проверки)
+    rect.move(10,10);      // public метод - OK
+    cout << "Public method move() works, protected members inaccessible\n\n";
     
-    cout << "\n--- Rectangle ---\n";
-    rect.draw();
-    rect.move(-10, 20);
-    rect.rotate(45);
+    // === TASK 3: ОТОЖДЕСТВЛЕНИЕ КВАДРАТА И ПАРАЛЛЕЛОГРАММА (виртуальное наследование) ===
+    cout << "=== TASK 3: IDENTIFICATION (Virtual Inheritance) ===\n";
+    Square mySquare(100,100,50);
+    cout << "As Square: "; mySquare.draw();
     
-    cout << "\n--- Rhombus ---\n";
-    rhomb.draw();
-    rhomb.rotate(20);
+    Parallelogram* pPtr = &mySquare;  // Отождествление: Square как Parallelogram
+    cout << "As Parallelogram: "; pPtr->draw();
+    pPtr->move(10,10);
+    cout << "After move as Parallelogram: "; pPtr->draw();
+    cout << "Square IS-A Parallelogram (virtual inheritance works)\n\n";
     
-    cout << "\n--- Square ---\n";
-    square.draw();
-    square.move(15, 15);
-    square.rotate(90);
+    // === TASK 4: ТОЧКА - АБСТРАКТНЫЙ КЛАСС ===
+    cout << "=== TASK 4: Point is ABSTRACT ===\n";
+    // Point p;  // ОШИБКА: нельзя создать объект абстрактного класса (раскомментировать для проверки)
+    cout << "Point has pure virtual methods => ABSTRACT CLASS\n";
+    cout << "Cannot instantiate Point, only pointers/references\n\n";
     
-    cout << "\n--- Parallelogram ---\n";
-    para.draw();
-    para.rotate(25);
-    
-    // 3. ОТОЖДЕСТВЛЕНИЕ: Квадрат как Параллелограмм (виртуальное наследование)
-    cout << "\n=== IDENTIFICATION: Square as Parallelogram ===\n";
-    Square mySquare(200, 200, 50);
-    cout << "Original: "; mySquare.draw();
-    
-    Parallelogram* paraPtr = &mySquare;
-    cout << "As Parallelogram: "; paraPtr->draw();
-    
-    // 4. Различные уровни доступа
-    cout << "\n=== ACCESS DEMO ===\n";
-    cout << "Public getter: x=" << rect.getX() << ", y=" << rect.getY() << endl;
-    // rect.x = 10;  // ОШИБКА: protected! (раскомментировать для проверки)
-    // rect.validateCoordinates(); // ОШИБКА: private! (если бы был)
-    
-    // 5. ПОЗДНЕЕ СВЯЗЫВАНИЕ (динамический полиморфизм)
-    cout << "\n=== LATE BINDING (Polymorphism) ===\n";
+    // === TASK 5: ПОЗДНЕЕ СВЯЗЫВАНИЕ (динамический полиморфизм) ===
+    cout << "=== TASK 5: LATE BINDING (Dynamic Polymorphism) ===\n";
     vector<Point*> shapes;
     shapes.push_back(&line);
     shapes.push_back(&rect);
@@ -136,29 +127,19 @@ int main() {
     shapes.push_back(&mySquare);
     
     for (Point* shape : shapes) {
-        shape->draw();  // Позднее связывание - вызывается метод реального типа
-        shape->move(2, 2);
+        cout << "Calling draw() via Point*: ";
+        shape->draw();  // Позднее связывание - реальный тип определяется в runtime
+        shape->move(1,1);
         cout << "---\n";
     }
     
-    // 6. Проверка dynamic_cast
-    cout << "\n=== TYPE CHECK ===\n";
-    for (Point* shape : shapes) {
-        Square* s = dynamic_cast<Square*>(shape);
-        if (s) cout << "Found Square: "; s ? s->draw() : cout << "";
-        
-        Parallelogram* p = dynamic_cast<Parallelogram*>(shape);
-        if (p) cout << " (is Parallelogram)\n";
-    }
+    // Дополнительная проверка полиморфизма
+    cout << "\n=== POLYMORPHISM VERIFICATION ===\n";
+    Point* ptr = new Square(200,200,60);
+    ptr->draw();      // Вызовется Square::draw() (позднее связывание)
+    ptr->rotate(45);
+    delete ptr;       // Виртуальный деструктор
     
-    // 7. Демонстрация виртуального деструктора
-    cout << "\n=== VIRTUAL DESTRUCTOR ===\n";
-    Point* ptr = new Square(150, 150, 25);
-    ptr->draw();
-    delete ptr;  // Правильно вызывает деструктор Square
-    
-    // Point p;  // ОШИБКА: нельзя создать абстрактный класс!
-    
-    cout << "\n=== PROGRAM COMPLETED ===\n";
+    cout << "\n=== ALL TASKS COMPLETED SUCCESSFULLY ===\n";
     return 0;
 }
