@@ -1,0 +1,407 @@
+import os
+
+
+# ==================== ИГРОВОЕ ПОЛЕ ====================
+class GameField:
+    def __init__(self, matrix):
+        # Копируем матрицу, чтобы не менять исходную
+        self.matrix = []
+        for row in matrix:
+            self.matrix.append(row[:])
+        self.initial = []
+        for row in matrix:
+            self.initial.append(row[:])
+        self.rows = len(matrix)
+        self.cols = len(matrix[0])
+
+    def get_cell(self, x, y):
+        # Проверяем, что координаты внутри поля
+        if 0 <= x < self.rows and 0 <= y < self.cols:
+            return self.matrix[x][y]
+        return None
+
+    def set_cell(self, x, y, symbol):
+        if 0 <= x < self.rows and 0 <= y < self.cols:
+            self.matrix[x][y] = symbol
+
+    def is_wall(self, x, y):
+        return self.get_cell(x, y) == '0'
+
+    def is_inside(self, x, y):
+        return 0 <= x < self.rows and 0 <= y < self.cols
+
+    def count_symbol(self, symbol):
+        # Считаем, сколько раз символ встречается на поле
+        total = 0
+        for row in self.matrix:
+            for cell in row:
+                if cell == symbol:
+                    total = total + 1
+        return total
+
+    def render(self, unit_x, unit_y, unit_symbol):
+        # Верхняя рамка
+        print('+' + '-' * self.cols + '+')
+        for i in range(self.rows):
+            line = '|'
+            for j in range(self.cols):
+                if i == unit_x and j == unit_y:
+                    line = line + unit_symbol
+                else:
+                    line = line + self.matrix[i][j]
+            line = line + '|'
+            print(line)
+        # Нижняя рамка
+        print('+' + '-' * self.cols + '+')
+
+    def reset(self):
+        # Возвращаем поле в исходное состояние
+        self.matrix = []
+        for row in self.initial:
+            self.matrix.append(row[:])
+
+
+# ==================== ЮНИТ (родитель) ====================
+class Unit:
+    def __init__(self, x, y, name, symbol, max_hp):
+        self.x = x
+        self.y = y
+        self.name = name
+        self.symbol = symbol
+        self.hp = max_hp
+        self.max_hp = max_hp
+        self.score = 0
+        self.alive = True
+
+    # Этот метод будет переопределён в наследниках
+    def move(self, direction, field):
+        return {'moved': False, 'message': 'Юнит не умеет ходить.'}
+
+    # Описание юнита (тоже переопределяется)
+    def describe(self):
+        return 'Обычный юнит'
+
+    # Общий шаг: используется всеми наследниками
+    def try_step(self, nx, ny, field):
+        # За границей поля?
+        if not field.is_inside(nx, ny):
+            return {'moved': False, 'message': 'За границей поля!'}
+        # Стена?
+        if field.is_wall(nx, ny):
+            return {'moved': False, 'message': 'Стена! Проход невозможен.'}
+
+        # Двигаемся
+        self.x = nx
+        self.y = ny
+
+        cell = field.get_cell(nx, ny)
+        msg = self.name + ' переместился на (' + str(nx) + ', ' + str(ny) + ').'
+
+        if cell == '$':
+            self.score = self.score + 1
+            field.set_cell(nx, ny, '_')
+            msg = msg + ' Собрана монета! Счёт: ' + str(self.score)
+        elif cell == '*':
+            self.hp = self.hp - 1
+            field.set_cell(nx, ny, '_')
+            msg = msg + ' Ловушка! HP: ' + str(self.hp) + '/' + str(self.max_hp)
+            if self.hp <= 0:
+                self.alive = False
+                msg = msg + '\n' + self.name + ' погиб!'
+
+        return {'moved': True, 'message': msg}
+
+
+# ==================== НАСЛЕДНИК 1: ХОДОК ====================
+class Walker(Unit):
+    def __init__(self, x, y):
+        Unit.__init__(self, x, y, 'Ходок', 'W', 3)
+
+    def describe(self):
+        return 'Ходок - обычный юнит. Ходит на 1 клетку (W/A/S/D). HP: 3'
+
+    def move(self, direction, field):
+        # Определяем смещение
+        dx = 0
+        dy = 0
+        if direction == 'w' or direction == 'ц':
+            dx = -1
+        elif direction == 's' or direction == 'ы':
+            dx = 1
+        elif direction == 'a' or direction == 'ф':
+            dy = -1
+        elif direction == 'd' or direction == 'в':
+            dy = 1
+        else:
+            return {'moved': False, 'message': 'Неизвестное направление.'}
+
+        nx = self.x + dx
+        ny = self.y + dy
+        return self.try_step(nx, ny, field)
+
+
+# ==================== НАСЛЕДНИК 2: БЕГУН ====================
+class Runner(Unit):
+    def __init__(self, x, y):
+        Unit.__init__(self, x, y, 'Бегун', 'R', 2)
+
+    def describe(self):
+        return 'Бегун - быстрый юнит. Ходит на 2 клетки (W/A/S/D). HP: 2'
+
+    def move(self, direction, field):
+        dx = 0
+        dy = 0
+        if direction == 'w' or direction == 'ц':
+            dx = -1
+        elif direction == 's' or direction == 'ы':
+            dx = 1
+        elif direction == 'a' or direction == 'ф':
+            dy = -1
+        elif direction == 'd' or direction == 'в':
+            dy = 1
+        else:
+            return {'moved': False, 'message': 'Неизвестное направление.'}
+
+        messages = []
+        # Делаем два шага
+        step = 0
+        while step < 2:
+            nx = self.x + dx
+            ny = self.y + dy
+            # Если впереди стена или граница — прерываем движение
+            if not field.is_inside(nx, ny) or field.is_wall(nx, ny):
+                break
+            result = self.try_step(nx, ny, field)
+            messages.append(result['message'])
+            if not result['moved']:
+                break
+            if not self.alive:
+                break
+            step = step + 1
+
+        if len(messages) == 0:
+            return {'moved': False, 'message': 'Путь заблокирован.'}
+        return {'moved': True, 'message': '\n'.join(messages)}
+
+
+# ==================== НАСЛЕДНИК 3: ТЕЛЕПОРТ ====================
+class Teleporter(Unit):
+    def __init__(self, x, y):
+        Unit.__init__(self, x, y, 'Телепорт', 'T', 1)
+
+    def describe(self):
+        return 'Телепорт - прыгает через стены. Ходит на 1 клетку. HP: 1'
+
+    def move(self, direction, field):
+        dx = 0
+        dy = 0
+        if direction == 'w' or direction == 'ц':
+            dx = -1
+        elif direction == 's' or direction == 'ы':
+            dx = 1
+        elif direction == 'a' or direction == 'ф':
+            dy = -1
+        elif direction == 'd' or direction == 'в':
+            dy = 1
+        else:
+            return {'moved': False, 'message': 'Неизвестное направление.'}
+
+        nx = self.x + dx
+        ny = self.y + dy
+
+        # Если впереди стена — пробуем перепрыгнуть
+        if field.is_inside(nx, ny) and field.is_wall(nx, ny):
+            jx = nx + dx
+            jy = ny + dy
+            # За стеной должно быть свободно
+            if not field.is_inside(jx, jy) or field.is_wall(jx, jy):
+                return {'moved': False, 'message': 'Стена, перепрыгнуть некуда.'}
+            result = self.try_step(jx, jy, field)
+            if result['moved']:
+                result['message'] = self.name + ' перепрыгнул стену! ' + result['message']
+            return result
+
+        return self.try_step(nx, ny, field)
+
+
+# ==================== ИГРА ====================
+def clear_screen():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
+
+
+def parse_level(raw_matrix):
+    # Копируем матрицу и ищем стартовую позицию 'W'
+    matrix = []
+    for row in raw_matrix:
+        matrix.append(row[:])
+
+    start_x = 0
+    start_y = 0
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] == 'W':
+                start_x = i
+                start_y = j
+                matrix[i][j] = '_'
+
+    return matrix, start_x, start_y
+
+
+def choose_level():
+    print('=' * 50)
+    print('ВЫБОР УРОВНЯ')
+    print('=' * 50)
+    print('1. Уровень 1 - Разминка')
+    print('2. Уровень 2 - Лабиринт')
+    print('=' * 50)
+
+    while True:
+        choice = input('Ваш выбор (1/2): ').strip()
+        if choice == '1':
+            return [
+                ['W', '_', '_', '$', '0'],
+                ['0', '0', '_', '0', '_'],
+                ['$', '_', '*', '_', '$'],
+                ['_', '0', '_', '0', '_'],
+                ['_', '_', '$', '_', '$'],
+            ]
+        elif choice == '2':
+            return [
+                ['W', '$', '0', '_', '$', '_'],
+                ['_', '0', '_', '0', '_', '0'],
+                ['$', '_', '*', '_', '$', '_'],
+                ['0', '_', '0', '_', '0', '$'],
+                ['_', '$', '_', '*', '_', '_'],
+                ['$', '0', '_', '$', '0', '$'],
+            ]
+        else:
+            print('Неверный выбор. Попробуйте снова.')
+
+
+def choose_unit(start_x, start_y):
+    print('=' * 50)
+    print('ВЫБОР ЮНИТА')
+    print('=' * 50)
+    print('1. Ходок    - 1 клетка/ход, HP=3')
+    print('2. Бегун    - 2 клетки/ход, HP=2')
+    print('3. Телепорт - прыгает через стены, HP=1')
+    print('=' * 50)
+
+    while True:
+        choice = input('Ваш выбор (1/2/3): ').strip()
+        if choice == '1':
+            return Walker(start_x, start_y)
+        elif choice == '2':
+            return Runner(start_x, start_y)
+        elif choice == '3':
+            return Teleporter(start_x, start_y)
+        else:
+            print('Неверный выбор. Попробуйте снова.')
+
+
+def print_help():
+    print('-' * 50)
+    print('УПРАВЛЕНИЕ:')
+    print('  W/A/S/D или Ц/Ф/Ы/В - движение')
+    print('  help                - помощь')
+    print('  status              - статус юнита')
+    print('  restart             - заново')
+    print('  quit                - выход')
+    print('-' * 50)
+
+
+def main():
+    print('=' * 50)
+    print('     КОНСОЛЬНАЯ ИГРА: ЮНИТ В ЛАБИРИНТЕ')
+    print('=' * 50)
+    print('Символы:')
+    print('  _ - пустая клетка')
+    print('  0 - стена')
+    print('  $ - монета (+1 к счёту)')
+    print('  * - ловушка (-1 HP)')
+    print('=' * 50)
+    input('Нажмите Enter, чтобы продолжить...')
+
+    # Выбор уровня
+    raw_matrix = choose_level()
+    matrix, start_x, start_y = parse_level(raw_matrix)
+    field = GameField(matrix)
+
+    # Выбор юнита
+    unit = choose_unit(start_x, start_y)
+    print('\nВы выбрали: ' + unit.describe())
+
+    total_coins = field.count_symbol('$')
+    print('Всего монет на уровне: ' + str(total_coins))
+
+    input('\nНажмите Enter, чтобы начать...')
+    print_help()
+
+    # Основной игровой цикл
+    while True:
+        clear_screen()
+
+        # Рисуем поле
+        field.render(unit.x, unit.y, unit.symbol)
+        print('Юнит: ' + unit.name + ' HP=' + str(unit.hp) + '/' + str(unit.max_hp)
+              + ' Счёт=' + str(unit.score))
+        print('Монет на поле: ' + str(field.count_symbol('$')) + '/' + str(total_coins))
+
+        # Проверка проигрыша
+        if not unit.alive:
+            print('\nВЫ ПРОИГРАЛИ! Юнит погиб.')
+            break
+
+        # Проверка победы
+        if field.count_symbol('$') == 0:
+            print('\nПОБЕДА! Все монеты собраны!')
+            print('Итоговый счёт: ' + str(unit.score))
+            break
+
+        # Читаем команду
+        cmd = input('\nКоманда: ').strip().lower()
+
+        if cmd == '':
+            continue
+
+        if cmd == 'quit' or cmd == 'q' or cmd == 'exit':
+            print('Игра прервана. До встречи!')
+            return
+
+        if cmd == 'help' or cmd == '?':
+            print_help()
+            input('Enter, чтобы продолжить...')
+            continue
+
+        if cmd == 'status':
+            print('\n' + unit.name + ' HP=' + str(unit.hp) + '/' + str(unit.max_hp)
+                  + ' Счёт=' + str(unit.score))
+            input('Enter, чтобы продолжить...')
+            continue
+
+        if cmd == 'restart':
+            field.reset()
+            # Создаём такого же юнита заново
+            if unit.name == 'Ходок':
+                unit = Walker(start_x, start_y)
+            elif unit.name == 'Бегун':
+                unit = Runner(start_x, start_y)
+            else:
+                unit = Teleporter(start_x, start_y)
+            print('Уровень перезапущен!')
+            continue
+
+        # Передаём команду юниту
+        result = unit.move(cmd, field)
+        print('\n' + result['message'])
+
+
+# Точка входа
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('\n\nИгра завершена.')
