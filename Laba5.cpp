@@ -5,10 +5,10 @@ using namespace std;
 
 class Shape {
 protected:
-    string name;                 // доступно наследникам
+    string name;
 
 private:
-    string color;                // инкапсулированное поле
+    string color;
 
 public:
     Shape(string n, string c) : name(n), color(c) {}
@@ -20,7 +20,7 @@ public:
         color = c;
     }
 
-    virtual double area() const = 0;   // абстрактный метод-контракт
+    virtual double area() const = 0;
     virtual ~Shape() {}
 };
 
@@ -57,7 +57,7 @@ int main() {
     cout << c.name << " " << c.getColor() << " " << c.area() << endl;
     cout << r.name << " " << r.getColor() << " " << r.area() << endl;
 
-    // Проверка инкапсуляции: следующая строка НЕ скомпилируется
+    // Проверка инкапсуляции
     // cout << c.color << endl;   // error: 'color' is a private member
 
     return 0;
