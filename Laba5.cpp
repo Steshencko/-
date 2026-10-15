@@ -57,8 +57,5 @@ int main() {
     cout << c.name << " " << c.getColor() << " " << c.area() << endl;
     cout << r.name << " " << r.getColor() << " " << r.area() << endl;
 
-    // Проверка инкапсуляции
-    // cout << c.color << endl;   // error: 'color' is a private member
-
     return 0;
 }
