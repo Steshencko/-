@@ -1,29 +1,25 @@
 class Shape:
-    """Базовый класс: фигура с названием и цветом."""
 
     def __init__(self, name, color):
-        self.name = name                 # публичное поле
-        self.__color = color             # приватное поле (name mangling)
+        self.name = name
+        self.__color = color
 
     def get_color(self):
-        """Геттер для приватного поля __color."""
         return self.__color
 
     def set_color(self, color):
-        """Сеттер с простой проверкой."""
         if not isinstance(color, str) or not color:
             raise ValueError("Цвет должен быть непустой строкой")
         self.__color = color
 
     def area(self):
-        """Метод-контракт: переопределяется в наследниках."""
         raise NotImplementedError("Метод area() должен быть переопределён")
 
 
 class Circle(Shape):
     def __init__(self, color, radius):
         super().__init__("Circle", color)
-        self.__radius = radius           # приватное поле наследника
+        self.__radius = radius
 
     def get_radius(self):
         return self.__radius
@@ -47,8 +43,6 @@ class Rectangle(Shape):
     def area(self):
         return self.__width * self.__height
 
-
-# --- Демонстрация ---
 if __name__ == "__main__":
     c = Circle("red", 3)
     r = Rectangle("blue", 4, 5)
@@ -56,7 +50,7 @@ if __name__ == "__main__":
     print(c.name, c.get_color(), round(c.area(), 2))   # Circle red 28.27
     print(r.name, r.get_color(), r.area())             # Rectangle blue 20
 
-    # Проверка инкапсуляции: прямое обращение к __color невозможно
+    # Проверка инкапсуляции
     try:
         print(c.__color)
     except AttributeError as e:
