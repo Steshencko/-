@@ -47,10 +47,10 @@ if __name__ == "__main__":
     c = Circle("red", 3)
     r = Rectangle("blue", 4, 5)
 
-    print(c.name, c.get_color(), round(c.area(), 2))   # Circle red 28.27
-    print(r.name, r.get_color(), r.area())             # Rectangle blue 20
+    print(c.name, c.get_color(), round(c.area(), 2))
+    print(r.name, r.get_color(), r.area())
 
     try:
         print(c.__color)
     except AttributeError as e:
-        print("Ошибка доступа:", e)   # 'Circle' object has no attribute '__color'
+        print("Ошибка доступа:", e)
