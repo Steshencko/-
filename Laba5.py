@@ -50,7 +50,6 @@ if __name__ == "__main__":
     print(c.name, c.get_color(), round(c.area(), 2))   # Circle red 28.27
     print(r.name, r.get_color(), r.area())             # Rectangle blue 20
 
-    # Проверка инкапсуляции
     try:
         print(c.__color)
     except AttributeError as e:
