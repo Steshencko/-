@@ -16,7 +16,7 @@ def total_with_discount_pure(prices, index, discount):
                for i, p in enumerate(prices)]
     return sum(updated)
 
-# ЗАДАНИЕ 2
+# ЗАДАНИЕ 2 Высший порядок
 def apply_discount(prices, discount_fn):
     """Применяет discount_fn к каждой цене, возвращает НОВЫЙ список."""
     return [discount_fn(p) for p in prices]
