@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-#  КЛАСС ИГРОВОГО ПОЛЯ
-
 class GameField:
     """Символьная матрица игрового поля."""
 
@@ -12,16 +10,12 @@ class GameField:
     PLAYER = 'P'
 
     def __init__(self, layout: list[str]):
-        # layout — список строк, например ["___0$", "__*__", ...]
         self._grid = [list(row) for row in layout]
         self._rows = len(self._grid)
         self._cols = len(self._grid[0]) if self._rows else 0
-
-        # Считаем стартовые монетки
         self._total_coins = sum(row.count(self.COIN) for row in self._grid)
         self._collected_coins = 0
 
-    # Свойства
     @property
     def rows(self) -> int:
         return self._rows
@@ -38,7 +32,7 @@ class GameField:
     def collected_coins(self) -> int:
         return self._collected_coins
 
-    # ---------- Работа с клетками ----------
+    # Работа с клетками
     def in_bounds(self, r: int, c: int) -> bool:
         return 0 <= r < self._rows and 0 <= c < self._cols
 
@@ -63,19 +57,17 @@ class GameField:
             self.set_cell(r, c, self.EMPTY)
             return 'coin'
         if cell == self.TRAP:
-            self.set_cell(r, c, self.EMPTY)  # ловушка одноразовая
+            self.set_cell(r, c, self.EMPTY)
             return 'trap'
         return 'empty'
 
     def all_coins_collected(self) -> bool:
         return self._collected_coins >= self._total_coins
 
-    # Отрисовка
     def render(self, player_pos=None, extra_positions=None) -> str:
         """Возвращает строку для вывода поля в консоль."""
         extra = set(extra_positions or [])
         lines = []
-        # Верхняя рамка
         lines.append('+' + '-' * self._cols + '+')
         for r in range(self._rows):
             row_str = '|'
@@ -211,27 +203,20 @@ class Jumper(Unit):
         mid_r, mid_c = self.row + mr, self.col + mc
         target_r, target_c = self.row + dr, self.col + dc
 
-        # Случай 1: стена в промежуточной клетке, упираемся
         if self.field.in_bounds(mid_r, mid_c) and self.field.is_wall(mid_r, mid_c):
-            # Прыжок невозможен. Пробуем сделать шаг на 1 (упереться).
-            # Но шагнуть в саму стену нельзя — значит, «упереться»
-            # означает остаться на месте вплотную к ней.
             self.last_message = 'Упёрся в стену — прыжок невозможен'
             return
 
-        # Случай 2: цель за границей поля, пробуем шаг
         if not self.field.in_bounds(target_r, target_c):
             if self._try_step(mr, mc):
                 self.last_message = 'Граница поля — сделан шаг на 1'
             return
 
-        # Случай 3: целевая клетка - стена, упираемся
         if self.field.is_wall(target_r, target_c):
             if self._try_step(mr, mc):
                 self.last_message = 'Упёрся в стену — сделан шаг на 1'
             return
 
-        # Случай 4: всё свободно - прыгаем на 2
         self.row, self.col = target_r, target_c
         event = self.field.interact_with_cell(self.row, self.col)
         if event == 'coin':
@@ -242,8 +227,6 @@ class Jumper(Unit):
             self.last_message = 'Прыжок! Ловушка -2 жизни'
         else:
             self.last_message = 'Прыжок на 2 клетки'
-
-#  ИГРОВОЙ ЦИКЛ
 
 class Game:
     DEFAULT_LAYOUT = [
@@ -284,14 +267,12 @@ class Game:
                 return Jumper(0, 0, self.field)
             print('Некорректный выбор, попробуйте снова.')
 
-    # Отрисовка
     def render(self) -> None:
         print('\n' + self.field.render((self.unit.row, self.unit.col)))
         print(self.unit.status())
         if self.unit.last_message:
             print('>> ' + self.unit.last_message)
 
-    # Обработка команды
     def handle_command(self, cmd: str) -> None:
         cmd = cmd.lower().strip()
 
@@ -317,7 +298,6 @@ class Game:
             return True
         return False
 
-    # Запуск
     def run(self) -> None:
         print('=' * 40)
         print('   КОНСОЛЬНАЯ ИГРА "ЮНИТ В ЛАБИРИНТЕ"')
@@ -343,8 +323,6 @@ class Game:
             self.handle_command(cmd)
             if self.running:
                 self.render()
-
-#  ТОЧКА ВХОДА
 
 if __name__ == '__main__':
     Game().run()
