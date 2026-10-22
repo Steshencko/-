@@ -84,7 +84,7 @@ int main() {
     Bicycle bike("Стелс", 20.0, 75.0);
     Airplane plane("Боинг", 900.0, 3000.0);
 
-    cout << "=== Задание 1: прямой вызов переопределённого метода ===\n";
+    cout << "Задание 1: прямой вызов переопределённого метода\n";
     cout << car.describe()   << " -> move() = " << car.move()   << "\n";
     cout << bike.describe()  << " -> move() = " << bike.move()  << "\n";
     cout << plane.describe() << " -> move() = " << plane.move() << "\n\n";
@@ -97,7 +97,7 @@ int main() {
     fleet.push_back(make_unique<Car>("КамАЗ", 60.0, 25.0));
     fleet.push_back(make_unique<Bicycle>("Мерида", 25.0, 65.0));
 
-    cout << "=== Задание 2: единый цикл по коллекции ===\n";
+    cout << "Задание 2: единый цикл по коллекции\n";
     double total = 0.0;
     int count = 0;
     for (const auto& v : fleet) {
