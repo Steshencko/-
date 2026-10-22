@@ -4,8 +4,8 @@ total_checks = 0
 def total_with_discount_impure(prices, index, discount):
     """НЕЧИСТАЯ: меняет входной список и глобальную переменную."""
     global total_checks
-    total_checks += 1                 # глобальное состояние
-    prices[index] -= discount         # изменение аргумента
+    total_checks += 1
+    prices[index] -= discount
     return sum(prices)
 
 # ЗАДАНИЕ 1.2 Чистая версия
