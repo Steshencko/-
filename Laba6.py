@@ -1,5 +1,5 @@
 # ЗАДАНИЕ 1.1 Нечистая версия
-total_checks = 0  # глобальная переменная-накопитель
+total_checks = 0
 
 def total_with_discount_impure(prices, index, discount):
     """НЕЧИСТАЯ: меняет входной список и глобальную переменную."""
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     print("=" * 50)
     print("ЗАДАНИЕ 1. Нечистая версия")
     print("=" * 50)
-    bad_prices = [120, 300, 250, 90]     # копия, т.к. нечистая версия портит данные
+    bad_prices = [120, 300, 250, 90]
     print("До вызова:   ", bad_prices)
     print("Итог:        ", total_with_discount_impure(bad_prices, 1, 50))
     print("После вызова:", bad_prices, " <- список ИЗМЕНЁН")
