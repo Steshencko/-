@@ -33,3 +33,5 @@ grandparent(X, Z) :-
 grandmother(X, Z) :-
     grandparent(X, Z),
     female(X).
+
+% https://swish.swi-prolog.org/
