@@ -6,11 +6,10 @@ coloring(A, B, C, D, E) :-
     member(C, [красный, зелёный, синий]),
     member(D, [красный, зелёный, синий]),
     member(E, [красный, зелёный, синий]),
-    % 7 конкретных ограничений смежности:
-    different(A, B),   % A–B
-    different(A, C),   % A–C
-    different(B, C),   % B–C
-    different(B, D),   % B–D
-    different(C, D),   % C–D
-    different(C, E),   % C–E
-    different(D, E).   % D–E
+    different(A, B),
+    different(A, C),
+    different(B, C),
+    different(B, D),
+    different(C, D),
+    different(C, E),
+    different(D, E).
