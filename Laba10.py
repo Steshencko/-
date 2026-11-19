@@ -13,8 +13,6 @@ EDGES = [
 REGION_NAMES = ['A', 'B', 'C', 'D', 'E']
 
 def is_safe(region, color, assignment):
-    """Проверка ограничений (constraint check):
-    цвет не должен совпадать с цветом уже назначенного соседа."""
     for (u, v) in EDGES:
         if u == region and v < len(assignment):
             if assignment[v] == color:
@@ -26,12 +24,6 @@ def is_safe(region, color, assignment):
 
 
 def solve(assignment, solutions=None):
-    """Рекурсивный поиск с возвратом.
-
-    assignment — частичное решение (список цветов по индексам регионов).
-    solutions  — если передан список, в него накапливаются ВСЕ решения;
-                 если None — возвращается ПЕРВОЕ найденное решение.
-    """
 
     if len(assignment) == len(REGION_NAMES):
         if solutions is not None:
