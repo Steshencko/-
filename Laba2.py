@@ -25,7 +25,6 @@ def sum_odd_recursive(lst):
 
 total_recursive = sum_odd_recursive(numbers)
 
-# Вывод результатов
 print("Входной список:", numbers)
 print("Сумма нечётных (sum + генератор):    ", total_gen)
 print("Сумма нечётных (filter + sum):      ", total_filter)
