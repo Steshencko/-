@@ -2,20 +2,12 @@ from functools import reduce
 
 numbers = [3, 8, 12, 5, 20, 7, 11, 4]
 
-# sum() + генераторное выражение
 total_gen = sum(x for x in numbers if x % 2 != 0)
 
-# filter() + sum()
 total_filter = sum(filter(lambda x: x % 2 != 0, numbers))
 
-# reduce() без переменной-накопителя
-total_reduce = reduce(
-    lambda acc, x: acc + x,
-    filter(lambda x: x % 2 != 0, numbers),
-    0
-)
+total_reduce = reduce(lambda acc, x: acc + x, filter(lambda x: x % 2 != 0, numbers), 0)
 
-# рекурсия (без циклов)
 def sum_odd_recursive(lst):
     """Сумма нечётных элементов списка через рекурсию."""
     if not lst:
