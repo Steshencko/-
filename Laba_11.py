@@ -22,7 +22,6 @@ def functional_odd_sum(numbers):
     return sum(x for x in numbers if x % 2 != 0)
 
 class OddSumAnalyzer:
-
     def __init__(self, numbers):
         self.numbers = numbers
 
