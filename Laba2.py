@@ -9,7 +9,6 @@ total_filter = sum(filter(lambda x: x % 2 != 0, numbers))
 total_reduce = reduce(lambda acc, x: acc + x, filter(lambda x: x % 2 != 0, numbers), 0)
 
 def sum_odd_recursive(lst):
-    """Сумма нечётных элементов списка через рекурсию."""
     if not lst:
         return 0
     head, *tail = lst
