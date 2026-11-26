@@ -2,7 +2,7 @@ NUMBERS = [3, 8, 12, 5, 20, 7]
 
 # ЗАДАНИЕ 1. ПРОЦЕДУРНОЕ
 def procedural_odd_sum(numbers):
-    """Императивный стиль: явный цикл и изменяемый накопитель."""
+    """Императивный стиль"""
     total = 0
     for x in numbers:
         if x % 2 != 0:
@@ -11,7 +11,7 @@ def procedural_odd_sum(numbers):
 
 # ЗАДАНИЕ 1. ОБЪЕКТНО-ОРИЕНТИРОВАННОЕ
 class OddSummator:
-    """ООП-стиль: состояние инкапсулировано в объекте, логика — в методе."""
+    """ООП-стиль"""
 
     def __init__(self, numbers):
         self.numbers = numbers
@@ -25,13 +25,11 @@ class OddSummator:
 
 # ЗАДАНИЕ 1. ДЕКЛАРАТИВНОЕ
 def functional_odd_sum(numbers):
-    """Функциональный стиль: генераторное выражение, без явного состояния."""
+    """Функциональный стиль"""
     return sum(x for x in numbers if x % 2 != 0)
 
 # ЗАДАНИЕ 2 — МУЛЬТИПАРАДИГМЕННОЕ РЕШЕНИЕ
 class OddSumAnalyzer:
-    """Мультипарадигменное решение задачи А1:
-       ООП + функциональный стиль + процедурный стиль в одном классе."""
 
     def __init__(self, numbers):
         self.numbers = numbers
