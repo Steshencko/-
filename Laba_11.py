@@ -1,18 +1,13 @@
 NUMBERS = [3, 8, 12, 5, 20, 7]
 
-# ЗАДАНИЕ 1. ПРОЦЕДУРНОЕ
 def procedural_odd_sum(numbers):
-    """Императивный стиль"""
     total = 0
     for x in numbers:
         if x % 2 != 0:
             total += x
     return total
 
-# ЗАДАНИЕ 1. ОБЪЕКТНО-ОРИЕНТИРОВАННОЕ
 class OddSummator:
-    """ООП-стиль"""
-
     def __init__(self, numbers):
         self.numbers = numbers
 
@@ -23,12 +18,9 @@ class OddSummator:
                 result += x
         return result
 
-# ЗАДАНИЕ 1. ДЕКЛАРАТИВНОЕ
 def functional_odd_sum(numbers):
-    """Функциональный стиль"""
     return sum(x for x in numbers if x % 2 != 0)
 
-# ЗАДАНИЕ 2 — МУЛЬТИПАРАДИГМЕННОЕ РЕШЕНИЕ
 class OddSumAnalyzer:
 
     def __init__(self, numbers):
